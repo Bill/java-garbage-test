@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -56,10 +57,9 @@ public class GarbageTest {
         for( int i = n; i > 0 && null != lazySeq; i -= 1) {
             lazySeq = lazySeq.tail();
         }
-
-//System.gc();
-//System.exit(1);
-
+// uncomment these two lines and run with YourKit onexit=memory to diagnose heap growth:
+//        System.gc();
+//        System.exit(1);
         return lazySeq;
     }
 
@@ -67,18 +67,18 @@ public class GarbageTest {
         return drop(n, lazySeq).head();
     }
 
-    static int SIZE = (int)1e6;
+    static int N = (int)1e6;
 
-    // succeeds @ SIZE = (int)1e8 with java -Xmx10m
+    // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
     public void dropTest() {
-        assertThat( drop(SIZE, naturals()).head(), is(SIZE+1));
+        assertThat( drop(N, naturals()).head(), is(N +1));
     }
 
-    // fails with OutOfMemoryError @ SIZE = (int)1e6 with java -Xmx10m
+    // fails with OutOfMemoryError @ N = (int)1e6 with java -Xmx10m
     @Test
     public void nthTest() {
-        assertThat( nth(SIZE, naturals()), is(SIZE+1));
+        assertThat( nth(N, naturals()), is(N +1));
     }
 
 }

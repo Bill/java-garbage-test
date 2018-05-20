@@ -5,15 +5,18 @@ Bills-MacBook-Air:java-garbage-test Bill$ clojure -J-Xmx10m
 Clojure 1.9.0
 user=> (defn naturals [] (iterate inc 1))
 #'user/naturals
-user=> (for [n [1e3 1e4 1e5 1e6 1e7]]
+user=> (for [n [1e3 1e4 1e5 1e6 1e7 1e8]]
   (time (first (drop n (naturals)))))
-("Elapsed time: 29.09182 msecs"
-"Elapsed time: 34.94448 msecs"
-"Elapsed time: 113.86844 msecs"
-"Elapsed time: 444.99815 msecs"
-"Elapsed time: 3619.999604 msecs"
-1001 10001 100001 1000001 10000001)
+("Elapsed time: 40.11968 msecs"
+"Elapsed time: 92.93135 msecs"
+"Elapsed time: 137.836554 msecs"
+"Elapsed time: 824.371466 msecs"
+"Elapsed time: 5806.061034 msecs"
+"Elapsed time: 36581.824392 msecs"
+1001 10001 100001 1000001 10000001 100000001)
 ```
+
+We iterated through a hundred million and one items with only a 10MB heap, in around 37 seconds.
 
 This project attempts to do a similar trick with the minimal amount of (not library-quality) Java. We define a `LazySeq` class and define a `Supplier` for it, called `Increment`.
 
@@ -23,7 +26,7 @@ In a JVM w/ a 10MB heap, with `N` = `1e6`, the `drop()` test succeeds but the `n
 
 Take a look at `dropTest()` and `nthTest()` and see if you discern any material differences.
 
-By `@Ignore`-ing `nthTest()` was was able to raise `N` to `1e8` and see the `dropTest()` succeed (in a little under two minutes).
+By `@Ignore`-ing `nthTest()` I was able to raise `N` to `1e8` and see the `dropTest()` succeed (in a little under two minutes).
 
 I experimented with YourKit `onexit=memory` profiling: running `gc()` and exiting before returning from `drop()`. The results were confusing.
 
@@ -39,7 +42,7 @@ You'll see `nthTest()` fail.
 
 Or run in IntelliJ with `-Xmx10m` added to VM options to see `nthTest()` fail.
 
-Or run in IntelliJ with the YourKit plugin. It's most useful, in the run config, under "Startup/Connection" > "Advanced" to set "Other Startup Options..." to `onexit=memory` You might also want to experiment with running `gc()` and exiting before returning from `drop()`.
+Or run in IntelliJ with the YourKit plugin. It's most useful, in the run config, under "Startup/Connection" > "Advanced" to set "Other Startup Options..." to set `onexit=memory` You might also want to experiment with running `gc()` and exiting before returning from `drop()`.
 
 When I set `N` to a manageable number like 10, and go to the YourKit "Memory" tab, and look in "Inspections" > "Possible Leaks" > "Objects retained by inner class back references", I see the `LazySeq` whose head is `1` listed, both when running `dropTest()` (how could that test scale if it were retaining head?!?) and `nthTest()`.
 

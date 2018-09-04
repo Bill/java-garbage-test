@@ -36,7 +36,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <argLine>-Xmx10m</argLine>
+                    <!-- -Xcomp is necessary to force optimization otherwise test fail due to memory leaks -->
+                    <argLine>-Xmx10m -Xcomp</argLine>
                 </configuration>
             </plugin>
         </plugins>

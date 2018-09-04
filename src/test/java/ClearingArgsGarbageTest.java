@@ -87,8 +87,8 @@ public class ClearingArgsGarbageTest {
     }
 
     // fails with OutOfMemoryError @ N = (int)1e6 with java -Xmx10m
+    // unless you also add -Xcomp to force compilation (prevent interpretation)
     @Test
-    @Ignore
     public void nthTest() {
         assertThat( nth(N, naturals()), is(N+1));
     }

@@ -85,8 +85,7 @@ public class ClearingArgsGarbageTest {
     // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
     public void nthTest() {
-        LazyishSeq nat1 = naturals();
-        assertThat( nth(N, ret1(nat1, nat1=null)), is(N+1));
+        assertThat( nth(N, naturals()), is(N+1));
     }
 
     private static LazyishSeq ret1(final LazyishSeq seq, final Object _ignored) {

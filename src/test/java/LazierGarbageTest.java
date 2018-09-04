@@ -117,8 +117,7 @@ public class LazierGarbageTest {
     // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
     public void nthTest() {
-        Seq nat1 = naturals();
-        assertThat( nth(N, ret1(nat1, nat1=null)), is(N+1));
+        assertThat( nth(N, naturals()), is(N+1));
     }
 
     private static Seq ret1(final Seq seq, final Object _ignored) {

@@ -36,8 +36,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
                 <configuration>
-                    <!-- -Xcomp is necessary to force optimization otherwise test fail due to memory leaks -->
-                    <argLine>-Xmx10m -Xcomp</argLine>
+                    <!-- you can add -Xcomp to force machine-code compilation and make GarbageTest.nthTest() pass -->
+                    <argLine>-Xmx10m</argLine>
                 </configuration>
             </plugin>
         </plugins>

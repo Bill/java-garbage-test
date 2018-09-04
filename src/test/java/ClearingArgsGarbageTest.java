@@ -69,27 +69,28 @@ public class ClearingArgsGarbageTest {
     }
 
     static int nth(final int n, /*final*/ LazyishSeq lazySeqArg) {
-        final LazyishSeq lazySeqLocal = lazySeqArg;
+        LazyishSeq lazySeqLocal = lazySeqArg;
         lazySeqArg = null;
-        return drop(n,lazySeqLocal).head();
+        return drop(n,ret1(lazySeqLocal, lazySeqLocal=null)).head();
     }
 
     static int N = (int)1e6;
 
     // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
-    /**
-     * This (should be) exactly the same functionality as nthTest(). The only change is that
-     * the nth() call has been inlined via IntelliJ refactoring.
-     */
     public void dropTest() {
         assertThat( drop(N, naturals()).head(), is(N+1));
     }
 
-    // fails with OutOfMemoryError @ N = (int)1e6 with java -Xmx10m
-    // unless you also add -Xcomp to force compilation (prevent interpretation)
+    // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
     public void nthTest() {
-        assertThat( nth(N, naturals()), is(N+1));
+        LazyishSeq nat1 = naturals();
+        assertThat( nth(N, ret1(nat1, nat1=null)), is(N+1));
     }
+
+    private static LazyishSeq ret1(final LazyishSeq seq, final Object _ignored) {
+        return seq;
+    }
+
 }

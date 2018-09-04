@@ -103,26 +103,26 @@ public class LazierGarbageTest {
     static int nth(final int n, Seq seqArg) {
         Seq seq = seqArg;
         seqArg = null;
-        return drop(n, seq).head();
+        return drop(n, ret1(seq, seq=null)).head();
     }
 
     static int N = (int)1e6;
 
     // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
-    /**
-     * This (should be) exactly the same functionality as nthTest(). The only change is that
-     * the nth() call has been inlined via IntelliJ refactoring.
-     */
     public void dropTest() {
         assertThat( drop(N, naturals()).head(), is(N+1));
     }
 
-    // fails with OutOfMemoryError @ N = (int)1e6 with java -Xmx10m
-    // unless you also add -Xcomp to force compilation (prevent interpretation)
+    // succeeds @ N = (int)1e8 with java -Xmx10m
     @Test
     public void nthTest() {
-        assertThat( nth(N, naturals()), is(N+1));
+        Seq nat1 = naturals();
+        assertThat( nth(N, ret1(nat1, nat1=null)), is(N+1));
+    }
+
+    private static Seq ret1(final Seq seq, final Object _ignored) {
+        return seq;
     }
 
 }

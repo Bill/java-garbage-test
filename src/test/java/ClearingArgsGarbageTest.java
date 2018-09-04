@@ -5,11 +5,12 @@ import static org.junit.Assert.assertThat;
 
 import java.util.function.Supplier;
 
-public class GarbageTest {
+/**
+ * Like GarbageTest, but this one's drop() and nth() set their parameters to null
+ * before making any calls.
+ */
+public class ClearingArgsGarbageTest {
 
-    /**
-     * a not-perfectly-lazy lazy sequence of ints. see LazierGarbageTest for a lazier one
-     */
     static class LazyishSeq {
         final int head;
 
@@ -58,19 +59,19 @@ public class GarbageTest {
 
     static LazyishSeq drop(
             final int n,
-            final LazyishSeq lazySeqArg) {
-        LazyishSeq lazySeq = lazySeqArg;
-        for( int i = n; i > 0 && null != lazySeq; i -= 1) {
-            lazySeq = lazySeq.tail();
+            LazyishSeq lazySeqArg) {
+        LazyishSeq lazySeqLocal = lazySeqArg;
+        lazySeqArg = null;
+        for( int i = n; i > 0 && null != lazySeqLocal; i -= 1) {
+            lazySeqLocal = lazySeqLocal.tail();
         }
-// uncomment these two lines and run with YourKit onexit=memory to diagnose heap growth:
-//        System.gc();
-//        System.exit(1);
-        return lazySeq;
+        return lazySeqLocal;
     }
 
-    static int nth(final int n, final LazyishSeq lazySeq) {
-        return drop(n, lazySeq).head();
+    static int nth(final int n, /*final*/ LazyishSeq lazySeqArg) {
+        final LazyishSeq lazySeqLocal = lazySeqArg;
+        lazySeqArg = null;
+        return drop(n,lazySeqLocal).head();
     }
 
     static int N = (int)1e6;
@@ -91,5 +92,4 @@ public class GarbageTest {
     public void nthTest() {
         assertThat( nth(N, naturals()), is(N+1));
     }
-
 }
